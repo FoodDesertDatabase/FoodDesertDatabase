@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { Box, Typography, Button } from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
 
 const ProductReport = () => {
     const [report, setReport] = useState(null);
@@ -29,49 +31,51 @@ const ProductReport = () => {
         }
     };
 
+   const columns = [
+        { field: 'first_name', headerName: 'First Name', width: 150 },
+        { field: 'last_name', headerName: 'Last Name', width: 150 },
+        { field: 'adult_servings', headerName: 'Adult Servings', width: 150, hide: report && report.product === 'childrenSnacks' },
+        { field: 'child_servings', headerName: 'Child Servings', width: 150 },
+        { field: 'total_servings', headerName: 'Total Servings', width: 150 },
+    ];
+
     return (
-        <div>
-            <h1>Product Report</h1>
-            <div>
-                <button onClick={() => fetchReport('ppMealKit')}>PP Meal Kit</button>
-                <button onClick={() => fetchReport('childrenSnacks')}>Children Snacks</button>
-                <button onClick={() => fetchReport('foodBox')}>Food Box</button>
-                <button onClick={() => fetchReport('rteMeal')}>RTE Meal</button>
-            </div>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
+        <Box sx={{ padding: 2 }}>
+            <Typography variant="h4" gutterBottom>
+                Product Report
+            </Typography>
+            <Box sx={{ marginBottom: 4 }}>
+                <Button variant="contained" color="primary" onClick={() => fetchReport('ppMealKit')} sx={{ marginRight: 2 }}>
+                    PP Meal Kit
+                </Button>
+                <Button variant="contained" color="primary" onClick={() => fetchReport('childrenSnacks')} sx={{ marginRight: 2 }}>
+                    Children Snacks
+                </Button>
+                <Button variant="contained" color="primary" onClick={() => fetchReport('foodBox')} sx={{ marginRight: 2 }}>
+                    Food Box
+                </Button>
+                <Button variant="contained" color="primary" onClick={() => fetchReport('rteMeal')}>
+                    RTE Meal
+                </Button>
+            </Box>
+            {error && <Typography color="error">{error}</Typography>}
             {report && (
-                <div>
-                    <h2>Report for {report.product}</h2>
-                    <p>Total Servings: {report.total_servings}</p>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th style={{ padding: '20px' }}>First Name</th>
-                                <th style={{ padding: '20px' }}>Last Name</th>
-                                {!report.product.includes('childrenSnacks') && (
-                                    <th style={{ padding: '20px' }}>Adult Servings</th>
-                                )}
-                                <th style={{ padding: '20px' }}>Child Servings</th>
-                                <th style={{ padding: '20px' }}>Total Servings</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {report.households.map((household) => (
-                                <tr key={household.household_id}>
-                                    <td style={{ padding: '22px' }}>{household.first_name}</td>
-                                    <td style={{ padding: '20px' }}>{household.last_name}</td>
-                                    {!report.product.includes('childrenSnacks') && (
-                                        <td style={{ padding: '20px' }}>{household.adult_servings}</td>
-                                    )}
-                                    <td style={{ padding: '20px' }}>{household.child_servings}</td>
-                                    <td style={{ padding: '20px' }}>{household.total_servings}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                <Box>
+                    <Typography variant="h6" gutterBottom>
+                        Report for {report.product}
+                    </Typography>
+                    <Typography variant="body1" gutterBottom>
+                        Total Servings: {report.total_servings}
+                    </Typography>
+                    <DataGrid
+                        columns={columns}
+                        rows={report.households}
+                        autoHeight
+                        getRowId={(row) => row.household_id}
+                    />
+                </Box>
             )}
-        </div>
+        </Box>
     );
 };
 
