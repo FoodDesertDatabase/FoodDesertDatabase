@@ -45,6 +45,7 @@ from .IndividualClientViews import IndividualClientView
 from .HouseholdIdView import HouseholdIdView
 from .EbtViews import EbtView
 from .ProductReportView import ProductReportView
+from .DietaryRestrictionsViews import DietaryRestrictionsViewSet
 
 #admin.site.register(Households)
 #admin.site.register(Ingredients)
@@ -100,6 +101,8 @@ router.register(r'suppliers', SupplierView, basename='suppliers')
 router.register(r'tempimageupload', TempImageUploadView, basename='tempimageupload')
 router.register(r'tempcardupload', TempCardUploadView, basename='tempcardupload')
 router.register(r'product-subscription-history', ProductSubscriptionHistoryView, basename='product-subscription-history')
+router.register(r'dietary-restrictions', DietaryRestrictionsViewSet, basename='dietary-restrictions')
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),

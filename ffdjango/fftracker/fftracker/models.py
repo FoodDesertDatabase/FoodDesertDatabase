@@ -200,6 +200,7 @@ class Households(models.Model):
     childrenSnacks_flag = models.BooleanField(default=False)
     foodBox_flag = models.BooleanField(default=False)
     rteMeal_flag = models.BooleanField(default=False)
+    restriction_flag = models.PositiveIntegerField(blank=True, null=True, default=0)
   
     class Meta:
         managed = True
@@ -214,6 +215,16 @@ class ProductSubscriptionHistory(models.Model):
     class Meta:
         managed = True
         db_table = 'product_subscription_history'
+
+class DietaryRestrictions(models.Model):
+    id = models.AutoField(primary_key=True)
+    household = models.ForeignKey(Households, on_delete=models.CASCADE, related_name='dietary_restrictions')
+    restriction_type = models.CharField(max_length=50)
+    servings = models.DecimalField(max_digits=5, decimal_places=2)
+
+    class Meta:
+        managed = True
+        db_table = 'dietary_restrictions'
 
 from storages.backends.azure_storage import AzureStorage
 
