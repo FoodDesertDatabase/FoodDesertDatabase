@@ -151,6 +151,23 @@ class HhAllergies(models.Model):
         db_table = 'hh_allergies'
 
 
+class PausedDates(models.Model):
+    paused_date_id = models.SmallAutoField(primary_key=True)
+    pause_start_date = models.DateField()
+    pause_end_date = models.DateField()
+    description = models.TextField(blank=True, null=True)
+    hh_id = models.ForeignKey('Households', on_delete=models.CASCADE, related_name='paused_dates', db_column='hh_id')
+
+    class Meta:
+        managed = True
+        db_table = 'paused_dates'
+
+    def __str__(self):
+        return f"Paused from {self.pause_start_date} to {self.pause_end_date}"
+
+
+
+    
 class HhKits(models.Model):
     hk_id = models.SmallIntegerField(primary_key=True)
     hk_kit = models.ForeignKey('Kits', models.CASCADE, blank=True, null=True)

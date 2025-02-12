@@ -5,6 +5,7 @@ import { Box } from '@mui/material'
 import AllergiesList from './AllergiesList';
 import NewModularDatagrid from '../components/NewModularDatagrid';
 import HouseholdForm from './HouseholdForm.js'
+import Datelist from "./Datelist"
 
 // Packaging List Component
 export default function HouseholdModularDatagrid() {
@@ -21,6 +22,23 @@ export default function HouseholdModularDatagrid() {
         }
         return <AllergiesList allergies={params.value} isEditable={true} updateEditForm={updateCellValue}/>
     }
+
+    const Datelistcell = (parms) => {
+        return <Datelist dates={parms.value} isEditable ={False}/>
+    };
+    const DatelistcellEdit = (parms) =>{
+        const api = useGridApiContext();
+        const updateCellValue = (newDates) => {
+            const{id, field} = parms;
+            api.current.setEditCellValue({
+                id,
+                field,
+                value: newDates,
+                debounceMs: 200,
+            });
+        };
+        return <Datelist dates = {parms.value} isEditable = {true} updateEditForm = {updateCellValue}/>
+    };
 
     const columns = [
         { field: 'hh_name', headerName: 'Name', type: 'string', width: 80, editable: true },
@@ -44,7 +62,21 @@ export default function HouseholdModularDatagrid() {
             renderCell: AllergyListCell,
             renderEditCell: (params) => <AllergyListEditCell {...params} sx={{height: 'auto', minHeight: 200, maxHeight: 1000}}/>
         },
-        { field: 'paused_flag', headerName: 'Paused', width: 70, type: 'boolean', editable: true, valueParser: (value) => value ? 1 : 0 },
+        {field: 'paused_flag', headerName: 'Paused', width: 100, type: 'string', editable: true,
+            renderCell: (params) => <Datelistcell pausedDates={params.value || []} relatedHHId={hh_id} />,
+            renderEditCell: (params) => (
+                <DatelistcellEdit 
+                    {...params} 
+                    relatedHHId={params.row.related_hh} 
+                    sx={{ height: 'auto', minHeight: 200, maxHeight: 1000 }} 
+                    handleAddPausedDate={(newDate) => {
+                        const updatedDates = [...(params.value || []), newDate];
+                        params.api.setEditCellValue({ id: params.id, field: params.field, value: updatedDates });
+                        params.api.refreshCells({ rowNodes: [params.node] });  // Ensure the grid updates the display
+                    }} 
+                />
+            )
+        },
     ]
     
     return(

@@ -5,7 +5,6 @@ from rest_framework.response import Response
 import logging
 logging.basicConfig(level = logging.WARNING)
 
-
 class AllergySerializer(serializers.ModelSerializer):       
     class Meta():
         model = HhAllergies
@@ -57,7 +56,7 @@ class HouseholdAllergySerializer(serializers.ModelSerializer):
         # if changing_pk:
         #     hh_instance.delete()
         # for key, value in validated_data.items():
-            # setattr(hh_instance, key, value)
+            # setattr(hh_instance, key, value)  
         return super().update(hh_instance, validated_data)
 
 class HouseholdsWithAllergies(viewsets.ModelViewSet):

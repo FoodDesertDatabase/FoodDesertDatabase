@@ -9,8 +9,8 @@ from rest_framework import viewsets, status
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
-from .models import Households, HhAllergies, Ingredients, Users, Recipes, MealPlans, Stations
-from .serializers import HouseholdSerializer, AllergySerializer, HouseholdAllergySerializer, IngredientInvSerializer, UserSerializer, StationSerializer, StationListSerializer
+from .models import Households, HhAllergies, Ingredients, Users, Recipes, MealPlans, Stations, PausedDates
+from .serializers import HouseholdSerializer, AllergySerializer, HouseholdAllergySerializer, IngredientInvSerializer, UserSerializer, StationSerializer, StationListSerializer, PausedDatesSerializer
 from .helperfuncs import execute_query
 from django.db import connection
 
@@ -42,6 +42,7 @@ def households_query():
 class HouseholdsWithAllergies(ModelViewSet):
 	queryset = Households.objects.all()
 	serializer_class = HouseholdAllergySerializer
+     
 
 	#def list(self, request):
 		#queryset = Households.objects.all()

@@ -6,7 +6,7 @@ import { InputLabel } from '@mui/material'
 import { Card } from '@mui/material'
 import { plPL } from '@mui/x-data-grid'
 import HistoricalDataHandler from './HistoricalDataHandler.js'
-// Kainoa Borges
+// Kainoa Borges  
 
 // Household Form component
 // Takes AddHousehold callback function
@@ -39,6 +39,7 @@ const HouseholdForm = (props) => {
       state: "",
       delivery_notes: "",
       hh_allergies: [],
+      hh_pauseddates: [],
       historicalTimeStamps: [],
       bags_or_crates: "",
     }
@@ -150,8 +151,9 @@ const HouseholdForm = (props) => {
                 <InputLabel htmlFor='rteMeal_flag'>Receiving Ready-to-Eat Meals: </InputLabel>
                 <Input name='rteMeal_flag' id='rteMeal_flag' type='checkbox' checked={household.rteMeal_flag} onChange={handleFormChange}/>
                 
-                <InputLabel htmlFor='paused_flag'>Is Paused: </InputLabel>          
-                <Input name='paused_flag' id='paused_flag' type='checkbox' checked={household.paused_flag} onChange={handleFormChange}/>
+                <InputLabel htmlFor="paused_flag">Is Paused: </InputLabel>
+                <Input name="paused_flag" id="paused_flag" type="checkbox" checked={household.paused_flag || (household.pausedDates && household.pausedDates.length > 0)} onChange={handleFormChange}/>
+
               
                 <InputLabel htmlFor='paying'>Is Paying: </InputLabel>          
                 <Input name='paying' id='paying' type='checkbox' checked={household.paying} onChange={handleFormChange}/>

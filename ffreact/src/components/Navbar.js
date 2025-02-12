@@ -110,7 +110,9 @@ const styles = {
                 <Button ref={props.ref} type="button" sx={{justifyContent: 'left', "&.MuiButton-text": { color:'black'}}} onClick={() => handlePageClick('recipe-packaging-report')}>
                     Recipe Packaging</Button>,
                 <Button ref={props.ref} type="button" sx={{justifyContent: 'left', "&.MuiButton-text": { color:'black'}}} onClick={() => handlePageClick('individual-household-product-report')}>
-                    Individual Household Product</Button>
+                    Individual Household Product</Button>,
+                <Button ref={props.ref} type="button" sx={{justifyContent: 'left', "&.MuiButton-text": { color:'black'}}} onClick={() => handlePageClick('view-paused-dates')}>
+                    Paused Dates Report</Button>
                 ]}/>
             <Button color='lightGreen' sx={{boxShadow:'0'}} variant="contained" onClick={() => handlePageClick('userList')}>
                 Administration

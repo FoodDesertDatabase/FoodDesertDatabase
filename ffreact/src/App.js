@@ -43,6 +43,7 @@ import PackagingDefinitionPage from './Packaging/PackagingDefinitions.js'
 import IngredientDefReport from './Reports/IngredientDefReport.js'
 import RecipePackagingReport from './Reports/RecipePackagingReport.js'
 import IndividualHouseholdProductReport from './Reports/IndividualHouseholdProductReport.js'
+import ViewPausedDates from './Reports/ViewPausedDates.js'
 
 // require("dotenv").config({path: `.env.${process.env.NODE_ENV}`})
 
@@ -159,6 +160,7 @@ const AppComponent = () => {
             case 'meal-plan-report': navigate('/meal-plan-report'); break;
             case 'meal-history-report': navigate('/meal-history-report'); break;
             case 'individual-household-product-report': navigate('/individual-household-product-report'); break;
+            case 'view-paused-dates': navigate('/view-paused-dates'); break;
             case 'recipePage': navigate('/recipes'); break;
             case 'userList': navigate('/admin'); break;
             case 'entryPage': navigate('/'); break;
@@ -251,6 +253,7 @@ const AppComponent = () => {
                         <Route path="/recipe-ing-report" element={<RecipeIngredientReport/>}/>
                         <Route path="/recipe-packaging-report" element={<RecipePackagingReport/>}/>
                         <Route path='/individual-household-product-report' element={<IndividualHouseholdProductReport handlePageClick={handlePageClick} />}/>
+                        <Route path='/view-paused-dates' element={<ViewPausedDates handlePageClick={handlePageClick} />}/>
                         <Route path='/under-construction' element={<UnderConstruction handlePageClick={handlePageClick}/>}/>
                         <Route path='/admin' element={
                             <AdminRoute isAdmin={loginState && loginState.isAdmin}>
