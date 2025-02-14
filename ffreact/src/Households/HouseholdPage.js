@@ -22,6 +22,7 @@ const fetchDietaryRestrictions = async (householdId) => {
             url: process.env.REACT_APP_API_URL + "dietary-restrictions/",
             params: { household: householdId }
         });
+        console.log('Fetched restrictions for household', householdId, ':', response.data);
         return response.data;
     } catch (error) {
         console.error('Error fetching dietary restrictions:', error);
@@ -171,7 +172,6 @@ export default function HouseholdPage(props) {
         const api = useGridApiContext();
         const [currentRestrictions, setCurrentRestrictions] = React.useState([]);
 
-        // Load existing restrictions when component mounts
         React.useEffect(() => {
             const loadExistingRestrictions = async () => {
                 try {
@@ -187,16 +187,14 @@ export default function HouseholdPage(props) {
         const updateCellValue = async (names, values) => {
             try {
                 const newRestrictions = values[0];
-                
-                // Save to dietary restrictions endpoint
                 const updatedRestrictions = await updateDietaryRestrictions(params.row.hh_id, newRestrictions);
                 
-                // Update grid with new data
-                params.api.updateRow({
+                // Update the grid data
+                const updatedRow = {
                     ...params.row,
-                    restriction_flag: updatedRestrictions.length > 0 ? 1 : 0,
                     dietary_restrictions: updatedRestrictions
-                });
+                };
+                params.api.updateRow(updatedRow);
                 
                 // Update local state
                 setCurrentRestrictions(updatedRestrictions);
@@ -212,6 +210,44 @@ export default function HouseholdPage(props) {
             householdId={params.row.hh_id}
         />;
     }
+
+    // Add a new component to handle async loading
+    const DietaryRestrictionsCell = (params) => {
+        const [restrictions, setRestrictions] = React.useState([]);
+        const [isLoading, setIsLoading] = React.useState(true);
+
+        React.useEffect(() => {
+            const loadRestrictions = async () => {
+                try {
+                    const data = await fetchDietaryRestrictions(params.row.hh_id);
+                    setRestrictions(data);
+                } catch (error) {
+                    console.error('Error loading restrictions:', error);
+                } finally {
+                    setIsLoading(false);
+                }
+            };
+            loadRestrictions();
+        }, [params.row.hh_id]);
+
+        if (isLoading) {
+            return <Typography>Loading...</Typography>;
+        }
+
+        if (restrictions && restrictions.length > 0) {
+            return (
+                <CellDialog 
+                    buttonText={'View Restrictions'} 
+                    dialogTitle={'Dietary Restrictions'} 
+                    component={<DietaryRestrictionsList 
+                        restrictions={restrictions} 
+                        isEditable={false}
+                    />}
+                />
+            );
+        }
+        return <Typography variant='p'>No Restrictions</Typography>;
+    };
 
     const columns = [
         { field: 'hh_last_name', headerName: 'Last Name', defaultValue:"Last Name", type: 'string', width: 120, editable: true},
@@ -245,23 +281,15 @@ export default function HouseholdPage(props) {
             headerName: 'Dietary Restrictions', 
             width: 200, 
             editable: true,
-            renderCell: (params) => {
-                if (params.row.restriction_flag === 1) {
-                    return <CellDialog 
-                        buttonText={'View Restrictions'} 
-                        dialogTitle={'Dietary Restrictions'} 
-                        component={<DietaryRestrictionsList restrictions={params.value} isEditable={false}/>}
-                    />;
-                } else {
-                    return <Typography variant='p'>No Restrictions</Typography>;
-                }
-            },
-            renderEditCell: (params) => 
-                <CellDialog 
+            // Replace the async renderCell with our new component
+            renderCell: (params) => <DietaryRestrictionsCell {...params} />,
+            renderEditCell: (params) => {
+                return <CellDialog 
                     buttonText={'Edit Restrictions'} 
                     dialogTitle={'Edit Restrictions'} 
                     component={<DietaryRestrictionsListEditCell {...params}/>}
-                />
+                />;
+            }
         },
         { field: 'hh_allergies', headerName: 'Allergies', width: 130, type: 'string', editable: true, 
             renderCell: (params) => {

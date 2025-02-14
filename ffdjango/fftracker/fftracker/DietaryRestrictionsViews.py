@@ -18,6 +18,12 @@ class DietaryRestrictionsViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
+        
+        # Update household's restriction flag
+        household = serializer.validated_data['household']
+        household.restriction_flag = 1
+        household.save()
+        
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
