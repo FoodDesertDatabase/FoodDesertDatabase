@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useGridApiContext, GridEditInputCell } from '@mui/x-data-grid';
 import './HouseholdList.css';
-import { Box, Typography, MenuItem, FormControl, Select, Button, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { Box, Typography, MenuItem, FormControl, Select, Button, Dialog, DialogTitle, DialogContent, DialogActions, List, Paper, ListItem, ListItemText} from '@mui/material';
 import axios from 'axios';
 import AllergiesList from './AllergiesList';
 import NewModularDatagrid from '../components/NewModularDatagrid';
@@ -139,6 +139,21 @@ export default function HouseholdPage(props) {
         setShowDatelist(false);
     };
 
+    const handleDeleteAllDates = async (hh_id) => {
+        if (window.confirm('Are you sure you want to delete all paused dates for this household?')) {
+            try {
+                await axios.delete(`${process.env.REACT_APP_API_URL}household/${hh_id}/delete_all_dates/`);
+                setPausedDates((prev) => ({
+                    ...prev,
+                    [hh_id]: [],
+                }));
+                setShowPausedDatesDialog(false);
+            } catch (error) {
+                alert('Error deleting all dates');
+            }
+        }
+    };
+
     const columns = [
         { field: 'hh_last_name', headerName: 'Last Name', defaultValue: "Last Name", type: 'string', width: 120, editable: true },
         { field: 'hh_first_name', headerName: 'First Name', defaultValue: 'First Name', type: 'string', width: 120, editable: true },
@@ -248,53 +263,61 @@ export default function HouseholdPage(props) {
                     AddFormComponent={HouseholdForm}
                     experimentalFeatures={{ columnGrouping: true }}
                 />
+                
                 <Dialog
-                    open={showDatelist}
-                    onClose={handleCancelClick}
-                    maxWidth="md"
-                    fullWidth
-                >
-                    <DialogTitle>Edit Dates</DialogTitle>
-                    <DialogContent>
-                        {selectedHousehold && (
-                            <Datelist
-                                hh_id={selectedHousehold.hh_id}
-                                handleDataUpdate={handleDataUpdate}
-                                onSaveSuccess={() => setShowDatelist(false)}
-                                selectedId={selectedId}
-                            />
-                        )}
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleCancelClick} color="primary">
-                            Cancel
-                        </Button>
-                        <Button onClick={() => setShowDatelist(false)} color="primary">
-                            Save
-                        </Button>
-                    </DialogActions>
+                open={showDatelist}
+                onClose={handleCancelClick}
+                maxWidth="md"
+                fullWidth>
+                <DialogTitle>Edit Dates</DialogTitle>
+                <DialogContent sx={{ p: 3 }}>
+                {selectedHousehold && (
+                     <Datelist hh_id={selectedHousehold.hh_id} handleDataUpdate={handleDataUpdate} onSaveSuccess={() => setShowDatelist(false)} selectedId={selectedId} handleCancelClick={handleCancelClick}/>
+                )}
+                </DialogContent>
                 </Dialog>
+
                 <Dialog
-                    open={showPausedDatesDialog}
-                    onClose={() => setShowPausedDatesDialog(false)}
+                open={showPausedDatesDialog}
+                onClose={() => setShowPausedDatesDialog(false)}
+                maxWidth="sm"
+                fullWidth
                 >
-                    <DialogTitle>Paused Dates</DialogTitle>
-                    <DialogContent>
-                        {selectedHousehold && pausedDates[selectedHousehold.hh_id] && pausedDates[selectedHousehold.hh_id].map((date, index) => (
-                            <div key={index} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                <Typography>
-                                    {date.pause_start_date} to {date.pause_end_date}: {date.description}
-                                </Typography>
-                            </div>
-                        ))}
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={() => setShowPausedDatesDialog(false)} color="primary">
-                            Close
-                        </Button>
-                    </DialogActions>
-                </Dialog>
+                <DialogTitle>Paused Duration</DialogTitle>
+                <DialogContent sx={{ p: 3 }}>
+                    {selectedHousehold && pausedDates[selectedHousehold.hh_id] ? (
+                        <List>
+                            {pausedDates[selectedHousehold.hh_id].map((date, index) => (
+                                <Paper key={index} sx={{ p: 2, mb: 1, borderRadius: 2 }}>
+                                    <ListItem sx={{ display: 'flex', justifyContent: 'unset' }}>
+                                        <ListItemText
+                                            primary={
+                                                <Typography variant="subtitle1" >
+                                                  Duration: {date.pause_start_date} --- {date.pause_end_date}
+                                                </Typography>
+                                            }
+                                        />
+                                    </ListItem>
+                                </Paper>
+                            ))}
+                        </List>
+                    ) : (
+                        <Typography variant="body2" color="text.secondary">
+                            No paused dates available.
+                        </Typography>
+                    )}
+                </DialogContent>
+                <DialogActions sx={{p: 2 }}>
+                    <Button onClick={() => setShowPausedDatesDialog(false)} variant="contained" color="secondary">
+                        Close
+                    </Button>
+                    <Button onClick={() => handleDeleteAllDates(selectedHousehold.hh_id)} variant="contained" color="secondary">
+                        Delete
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
             </Box>
         </div>
     );
-}  
+}

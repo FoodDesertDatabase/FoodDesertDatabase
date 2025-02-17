@@ -531,3 +531,11 @@ class Users(models.Model):
         managed = True
         db_table = 'users'
 
+class Servings(models.Model):
+    date = models.DateField()
+    total_servings = models.PositiveIntegerField()
+
+    class Meta:
+        managed = True
+        db_table = 'servings'
+

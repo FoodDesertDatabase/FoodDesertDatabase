@@ -161,7 +161,11 @@ const LandingPage = (props) => {
                     <Button ref={props.ref} type="button" sx={{justifyContent: 'left', "&.MuiButton-text": { color:'black'}}} onClick={() => handlePageClick('pack-purchase-report')}>
                         Packaging Purchase Report</Button>,
                     <Button ref={props.ref} type="button" sx={{justifyContent: 'left', "&.MuiButton-text": { color:'black'}}} onClick={() => handlePageClick('individual-household-product-report')}>
-                        Individual Household Product Report</Button>
+                        Individual Household Product Report</Button>,
+                   <Button ref={props.ref} type="button" sx={{justifyContent: 'left', "&.MuiButton-text": { color:'black'}}} onClick={() => handlePageClick('view-paused-dates')}>
+                        Paused Dates Report</Button>,
+                   <Button ref={props.ref} type="button" sx={{justifyContent: 'left', "&.MuiButton-text": { color:'black'}}} onClick={() => handlePageClick('show-servings-report')}>
+                        View Total Servings Report</Button>
                     ]}/>
             </Grid>
 

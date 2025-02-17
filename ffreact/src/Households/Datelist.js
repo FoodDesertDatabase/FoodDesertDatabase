@@ -1,31 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Button, TextField, Typography } from '@mui/material';
+import { Button, TextField } from '@mui/material';
+import { DialogContent } from '@mui/material';
 
-const Datelist = ({ hh_id, handleDataUpdate, onSaveSuccess, selectedId }) => {
+const Datelist = ({ hh_id, handleDataUpdate, onSaveSuccess, selectedId, handleCancelClick }) => {
     const [pauseStartDate, setPauseStartDate] = useState('');
     const [pauseEndDate, setPauseEndDate] = useState('');
     const [loading, setLoading] = useState(false);
-    const [pausedDates, setPausedDates] = useState([]);
     const [currentSelectedId, setCurrentSelectedId] = useState(selectedId);
 
     const apiUrl = `${process.env.REACT_APP_API_URL}datelist/`;
-
-    const fetchPausedDates = async () => {
-        try {
-            const response = await axios.get(`${apiUrl}?hh_id=${hh_id}`);
-            setPausedDates(response.data);
-        } catch (error) {
-            console.error('Error fetching paused dates:', error);
-            alert('Error fetching paused dates');
-        }
-    };
-
-    useEffect(() => {
-        if (hh_id) {
-            fetchPausedDates();
-        }
-    }, [hh_id]);
 
     useEffect(() => {
         if (currentSelectedId && hh_id) {
@@ -81,7 +65,6 @@ const Datelist = ({ hh_id, handleDataUpdate, onSaveSuccess, selectedId }) => {
 
             alert('Date range saved successfully');
             resetForm();
-            fetchPausedDates();
         } catch (error) {
             console.error('Failed to save date range:', error);
             alert('Failed to save date range');
@@ -90,38 +73,10 @@ const Datelist = ({ hh_id, handleDataUpdate, onSaveSuccess, selectedId }) => {
         }
     };
 
-    const handleDelete = async () => {
-        if (!hh_id) {
-            alert('Invalid household ID');
-            return;
-        }
-
-        if (window.confirm('Are you sure you want to delete all paused dates for this household?')) {
-            setLoading(true);
-            try {
-                await axios.delete(`${process.env.REACT_APP_API_URL}household/${hh_id}/delete_all_dates/`);
-                alert('All paused dates for this household deleted successfully');
-                fetchPausedDates();
-                resetForm();
-            } catch (error) {
-                console.error('Failed to delete paused dates:', error);
-                alert('Failed to delete paused dates');
-            } finally {
-                setLoading(false);
-            }
-        }
-    };
-
     const resetForm = () => {
         setPauseStartDate('');
         setPauseEndDate('');
         setCurrentSelectedId(null);
-    };
-
-    const handleEdit = (date) => {
-        setPauseStartDate(date.pause_start_date);
-        setPauseEndDate(date.pause_end_date);
-        setCurrentSelectedId(date.id);
     };
 
     return (
@@ -140,22 +95,14 @@ const Datelist = ({ hh_id, handleDataUpdate, onSaveSuccess, selectedId }) => {
                 onChange={(e) => setPauseEndDate(e.target.value)}
                 InputLabelProps={{ shrink: true }}
             />
-            <Button onClick={handleSave} disabled={loading}>
-                {loading ? 'Saving...' : 'Save'}
+            <DialogContent justifycontext = 'space-between' sx={{ p: 2 }}>
+            <Button onClick={handleSave}  variant="outlined" color="primary">
+                Save
             </Button>
-            <Button onClick={handleDelete} disabled={loading}>
-                {loading ? 'Deleting...' : 'Delete All'}
+            <Button onClick={handleCancelClick} variant="outlined" color="primary">
+                Cancel
             </Button>
-            <div>
-                {pausedDates.map((date) => (
-                    <div key={date.id}>
-                        <Typography>
-                            {date.pause_start_date} to {date.pause_end_date}
-                        </Typography>
-                        <Button onClick={() => handleEdit(date)}>Edit</Button>
-                    </div>
-                ))}
-            </div>
+            </DialogContent>
         </div>
     );
 };

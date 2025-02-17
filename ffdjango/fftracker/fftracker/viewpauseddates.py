@@ -6,21 +6,12 @@ from .serializers import PausedDatesSerializer
 
 
 class PausedDatesViewSet(viewsets.ModelViewSet):
-    """
-    ViewSet for managing PausedDates.
-    Provides CRUD operations on paused dates.
-    """
     queryset = PausedDates.objects.all()
     serializer_class = PausedDatesSerializer
 
 
 class HouseholdDateView(viewsets.ViewSet):
-    """
-    ViewSet for managing paused dates specific to households.
-    """
-
     def get_household(self, pk):
-        """Utility function to fetch a household by primary key."""
         try:
             return Households.objects.get(pk=pk)
         except Households.DoesNotExist:
@@ -28,9 +19,6 @@ class HouseholdDateView(viewsets.ViewSet):
 
     @action(detail=True, methods=['get'])
     def paused_dates(self, request, pk=None):
-        """
-        Retrieve all paused dates for a specific household.
-        """
         household = self.get_household(pk)
         if not household:
             return Response({'error': 'Household not found'}, status=status.HTTP_404_NOT_FOUND)
@@ -54,9 +42,6 @@ class HouseholdDateView(viewsets.ViewSet):
 
     @action(detail=True, methods=['delete'])
     def delete_all_dates(self, request, pk=None):
-        """
-        Delete all paused dates associated with a specific household.
-        """
         household = self.get_household(pk)
         if not household:
             return Response({'error': 'Household not found'}, status=status.HTTP_404_NOT_FOUND)

@@ -1,7 +1,7 @@
 from collections import UserString
 from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
-from .models import Households, HhAllergies, PausedDates, Ingredients, Kits, MealPlans, Packaging, ProductSubscriptionHistory, Recipes, Users, MealPacks, RecipeAllergies, RecipeDiets, RecipeIngredients, RecipeInstructions
+from .models import Households, HhAllergies, PausedDates, Ingredients, Kits, MealPlans, Packaging, ProductSubscriptionHistory, Recipes, Users, MealPacks, RecipeAllergies, RecipeDiets, RecipeIngredients, RecipeInstructions, Servings
 
 class AllergySerializer(ModelSerializer):
 	class Meta():
@@ -127,3 +127,8 @@ class ViewPausedDatesSerializer(serializers.ModelSerializer):
     class Meta:
         model = PausedDates
         fields = ['pause_start_date', 'pause_end_date', 'description']
+
+class ServingsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Servings
+        fields = ['date', 'total_servings']
