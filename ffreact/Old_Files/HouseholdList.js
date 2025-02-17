@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import HouseholdModularDatagrid from './HouseholdModularDatagrid.js'
+import HouseholdModularDatagrid from '../src/Households/HouseholdModularDatagrid.js'
 
 
 // Household List Component
