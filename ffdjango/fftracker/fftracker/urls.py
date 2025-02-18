@@ -45,6 +45,9 @@ from .IndividualClientViews import IndividualClientView
 from .HouseholdIdView import HouseholdIdView
 from .viewpauseddates import PausedDatesViewSet, HouseholdDateView 
 from .ShowServingsReport import ServingsReportView
+from .EbtViews import EbtView
+from .ProductReportView import ProductReportView
+from .DietaryRestrictionsViews import DietaryRestrictionsViewSet
 
 #admin.site.register(Households)
 #admin.site.register(Ingredients)
@@ -86,6 +89,7 @@ router.register(r'household-date', HouseholdDateView, basename='household-date')
 router.register(r'users', UserView, basename='users')
 router.register(r'user-auth', UserAuth, basename='user-auth')
 router.register(r'create-account', AccountCreateView, basename='create-account')
+router.register(r'Ebt-reports', EbtView, basename='Ebt-reports')
 # Meal Views
 router.register(r'menu', MenuView, basename='menu')
 router.register(r'meal', MealView, basename='meals-list')
@@ -103,6 +107,7 @@ router.register(r'suppliers', SupplierView, basename='suppliers')
 router.register(r'tempimageupload', TempImageUploadView, basename='tempimageupload')
 router.register(r'tempcardupload', TempCardUploadView, basename='tempcardupload')
 router.register(r'product-subscription-history', ProductSubscriptionHistoryView, basename='product-subscription-history')
+router.register(r'dietary-restrictions', DietaryRestrictionsViewSet, basename='dietary-restrictions')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -126,4 +131,5 @@ urlpatterns = [
     path('api/household-id/', HouseholdIdView.as_view(), name='household-id'),
     path('api/household/<str:pk>/delete_all_dates/', HouseholdDateView.as_view({'delete': 'delete_all_dates'})),
     path('api/servings', ServingsReportView.as_view(), name='servings-report'),
+    path('api/product-report/', ProductReportView.as_view(), name='product-report'),
 ]

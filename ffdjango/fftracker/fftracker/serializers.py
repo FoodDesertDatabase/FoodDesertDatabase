@@ -1,7 +1,8 @@
 from collections import UserString
 from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
-from .models import Households, HhAllergies, PausedDates, Ingredients, Kits, MealPlans, Packaging, ProductSubscriptionHistory, Recipes, Users, MealPacks, RecipeAllergies, RecipeDiets, RecipeIngredients, RecipeInstructions, Servings
+from .models import Households, HhAllergies, PausedDates, Servings, Ingredients, Kits, MealPlans, Packaging, ProductSubscriptionHistory, Recipes, Users, MealPacks, RecipeAllergies, RecipeDiets, RecipeIngredients, RecipeInstructions, DietaryRestrictions
+
 
 class AllergySerializer(ModelSerializer):
 	class Meta():
@@ -22,10 +23,17 @@ class UserSerializer(ModelSerializer):
 		model = Users
 		fields = ('__all__')
 
+class DietaryRestrictionsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DietaryRestrictions
+        fields = '__all__'
+
 class HouseholdSerializer(ModelSerializer):
-	class Meta():
-		model = Households
-		fields = ('__all__')
+    dietary_restrictions = DietaryRestrictionsSerializer(many=True, read_only=True)
+    
+    class Meta():
+        model = Households
+        fields = ('__all__')
 
 class HouseholdAllergySerializer(ModelSerializer):
 	hh_allergies = AllergySerializer(many=True)
@@ -122,7 +130,7 @@ class HouseholdReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = Households
         fields = ['id', 'hh_first_name', 'hh_last_name', 'products', 'paused_flag' , 'children_under_6', 'children_over_6', 'adults']
-
+        
 class ViewPausedDatesSerializer(serializers.ModelSerializer):
     class Meta:
         model = PausedDates

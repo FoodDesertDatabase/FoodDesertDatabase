@@ -42,6 +42,8 @@ const HouseholdForm = (props) => {
       hh_pauseddates: [],
       historicalTimeStamps: [],
       bags_or_crates: "",
+      ebt: "",
+      ebt_refill_date: undefined,
     }
   }
 
@@ -157,6 +159,12 @@ const HouseholdForm = (props) => {
               
                 <InputLabel htmlFor='paying'>Is Paying: </InputLabel>          
                 <Input name='paying' id='paying' type='checkbox' checked={household.paying} onChange={handleFormChange}/>
+
+                <InputLabel htmlFor='ebt'>EBT: </InputLabel>
+                <Input name='ebt' id='ebt' type='text' inputProps={{maxLength: '16'}} value={household.ebt} onChange={handleFormChange}/>
+
+                <InputLabel htmlFor='ebt_refill_date'>EBT Refill Date: </InputLabel>
+                <Input name='ebt_refill_date' id='ebt_refill_date' type='number' value={household.ebt_refill_date} onChange={handleFormChange}/>
               </Grid>
               <Grid item>
                 <InputLabel htmlFor='phone'>Phone Number*: </InputLabel>          

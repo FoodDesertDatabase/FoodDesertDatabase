@@ -39,6 +39,34 @@ export default function HouseholdModularDatagrid() {
         };
         return <Datelist dates = {parms.value} isEditable = {true} updateEditForm = {updateCellValue}/>
     };
+      
+    const [openPopup, setOpenPopup] = useState(false);
+    const [currentRestrictions, setCurrentRestrictions] = useState({});
+    const [currentParams, setCurrentParams] = useState(null);
+
+    const handleOpenPopup = (params) => {
+        setCurrentRestrictions(params.value || {});
+        setCurrentParams(params);
+        setOpenPopup(true);
+    };
+
+    const handleClosePopup = () => {
+        setOpenPopup(false);
+    };
+
+    const handleSaveRestrictions = (newRestrictions) => {
+        const api = useGridApiContext();
+        const { id, field } = currentParams;
+        api.current.setEditCellValue({ id, field, value: newRestrictions, debounceMs: 200 });
+        handleClosePopup();
+    };
+    const DietaryRestrictionsCell = (params) => {
+        return (
+            <Button variant="contained" onClick={() => handleOpenPopup(params)}>
+                Edit Restrictions
+            </Button>
+        );
+    };
 
     const columns = [
         { field: 'hh_name', headerName: 'Name', type: 'string', width: 80, editable: true },
@@ -77,6 +105,7 @@ export default function HouseholdModularDatagrid() {
                 />
             )
         },
+        { field: 'EBT', headerName: 'EBT', width: 70, type: 'string', editable: true },
     ]
     
     return(
@@ -92,6 +121,12 @@ export default function HouseholdModularDatagrid() {
                 AddFormComponent={HouseholdForm}>
             </NewModularDatagrid>
         </Box>
+        <DietaryRestrictionsPopup
+                open={openPopup}
+                onClose={handleClosePopup}
+                restrictions={currentRestrictions}
+                onSave={handleSaveRestrictions}
+            />
         </div>
     )
 }

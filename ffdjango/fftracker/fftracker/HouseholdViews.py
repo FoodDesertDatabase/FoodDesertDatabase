@@ -27,7 +27,7 @@ class HouseholdAllergySerializer(serializers.ModelSerializer):
         fields = ('hh_id', 'hh_first_name', 'hh_last_name', 'num_adult', 'num_child_lt_6', 'num_child_gt_6', 'sms_flag',
                 'veg_flag', 'allergy_flag', 'gf_flag', 'ls_flag', 'paused_flag', 'paying', 'phone', 'street', 'city',
                 'pcode', 'state', 'delivery_notes', 'hh_allergies', 'hh_bags_or_crates', 'ppMealKit_flag', 
-                'childrenSnacks_flag', 'foodBox_flag', 'rteMeal_flag')
+                'childrenSnacks_flag', 'foodBox_flag', 'rteMeal_flag', 'ebt', 'ebt_refill_date')
 
     def create(self, validated_data):
         allergy_data = validated_data.pop('hh_allergies')
