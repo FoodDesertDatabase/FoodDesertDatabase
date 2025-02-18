@@ -165,7 +165,7 @@ const LandingPage = (props) => {
                    <Button ref={props.ref} type="button" sx={{justifyContent: 'left', "&.MuiButton-text": { color:'black'}}} onClick={() => handlePageClick('view-paused-dates')}>
                         Paused Dates Report</Button>,
                    <Button ref={props.ref} type="button" sx={{justifyContent: 'left', "&.MuiButton-text": { color:'black'}}} onClick={() => handlePageClick('show-servings-report')}>
-                        View Total Servings Report</Button>
+                        View Total Servings Report</Button>,
                     <Button ref={props.ref} type="button" sx={{justifyContent: 'left', "&.MuiButton-text": { color:'black'}}} onClick={() => handlePageClick('ebt-reports')}>
                         EBT Reports</Button>,
                     <Button ref={props.ref} type="button" sx={{justifyContent: 'left', "&.MuiButton-text": { color:'black'}}} onClick={() => handlePageClick('product-report')}>

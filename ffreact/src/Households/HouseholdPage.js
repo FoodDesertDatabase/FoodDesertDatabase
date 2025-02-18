@@ -8,6 +8,8 @@ import NewModularDatagrid from '../components/NewModularDatagrid';
 import CellDialog from '../components/CellDialog.js';
 import HouseholdForm from './HouseholdForm.js';
 import Datelist from './Datelist';
+import DietaryRestrictionsEditCellContent from './DietaryRestrictionsEditCell.js';
+import DietaryRestrictionsList from './DietaryRestrictionsList.js';
 
 export default function HouseholdPage(props) {
     const loginState = props.loginState.isAuthenticated ? props.loginState : { isAuthenticated: false };
@@ -20,13 +22,6 @@ export default function HouseholdPage(props) {
 
     const apiUrl = `${process.env.REACT_APP_API_URL}households/`;
     const datelistApiUrl = `${process.env.REACT_APP_API_URL}datelist/`;
-import DietaryRestrictionsCell from './DietaryRestrictionCell.js';
-import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
-import { MenuItem, FormControl, Select, Button } from '@mui/material';
-import DietaryRestrictionsEditCellContent from './DietaryRestrictionsEditCell.js';
-import axios from 'axios';
-import { type } from '@testing-library/user-event/dist/type';
-import DietaryRestrictionsList from './DietaryRestrictionsList.js';
 
 // Households/Clients List Component
 const fetchDietaryRestrictions = async (householdId) => {
