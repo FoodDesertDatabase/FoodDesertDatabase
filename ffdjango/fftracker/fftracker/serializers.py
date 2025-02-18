@@ -1,13 +1,22 @@
 from collections import UserString
 from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
-from .models import Households, HhAllergies, Ingredients, Kits, MealPlans, Packaging, ProductSubscriptionHistory, Recipes, Users, MealPacks, RecipeAllergies, RecipeDiets, RecipeIngredients, RecipeInstructions, DietaryRestrictions
+from .models import Households, HhAllergies, PausedDates, Servings, Ingredients, Kits, MealPlans, Packaging, ProductSubscriptionHistory, Recipes, Users, MealPacks, RecipeAllergies, RecipeDiets, RecipeIngredients, RecipeInstructions, DietaryRestrictions
+
 
 class AllergySerializer(ModelSerializer):
 	class Meta():
 		model = HhAllergies
 		fields = ('__all__')
 		depth = 1
+
+
+class PausedDatesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PausedDates
+        fields = ['paused_date_id', 'pause_start_date', 'pause_end_date', 'description', 'hh_id']
+
+
 
 class UserSerializer(ModelSerializer):
 	class Meta():
@@ -30,9 +39,11 @@ class HouseholdAllergySerializer(ModelSerializer):
 	hh_allergies = AllergySerializer(many=True)
 	class Meta():
 		model = Households
-		fields = ('hh_name', 'num_adult', 'num_child_lt_6', 'num_child_gt_6', 'sms_flag', 'veg_flag', 'allergy_flag', 'gf_flag', 'ls_flag', 'paused_flag', 'phone', 'street', 'city', 'pcode', 'state', 'delivery_notes', 'hh_allergies')
+		fields = ('hh_name', 'num_adult', 'num_child_lt_6', 'num_child_gt_6', 'veg_flag', 'allergy_flag', 'gf_flag', 'ls_flag', 'paused_flag',' PausedDates', 'phone', 'street', 'city', 'pcode', 'state', 'delivery_notes', 'hh_allergies')
 
-		
+
+
+
 class IngredientInvSerializer(ModelSerializer):
 	isupplier_name = serializers.CharField(max_length=200)
 	pref_isupplier_name = serializers.CharField(max_length=200)
@@ -119,5 +130,13 @@ class HouseholdReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = Households
         fields = ['id', 'hh_first_name', 'hh_last_name', 'products', 'paused_flag' , 'children_under_6', 'children_over_6', 'adults']
+        
+class ViewPausedDatesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PausedDates
+        fields = ['pause_start_date', 'pause_end_date', 'description']
 
-
+class ServingsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Servings
+        fields = ['date', 'total_servings']

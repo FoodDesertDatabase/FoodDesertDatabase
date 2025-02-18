@@ -12,6 +12,7 @@ import MealPlanReport from './MealPlanReport.js'
 import MealHistory from './MealHistoryReport.js'
 import CostTotals from './CostTotals.js'
 import IndividualHouseholdProductReport from './IndividualHouseholdProductReport'
+import ViewPausedDates from './ViewPausedDates'
 
 const theme = createTheme({
     palette: {
@@ -58,7 +59,8 @@ const ReportsPage = (props) => {
         if (pageName === 'packaging-report') setCurrPage(<PackagingReport handlePageClick={handlePageClick} />);
         if (pageName === 'packaging-returns') setCurrPage(<PackagingReturns handlePageClick={handlePageClick} />);
         if (pageName === 'individual-household-product-report') setCurrPage(<IndividualHouseholdProductReport handlePageClick={handlePageClick} />);
-        else if (pageName === 'pack-purchase-report') setCurrPage(<PackagingPurchaseReport handlePageClick={handlePageClick} />);
+        if (pageName === 'pack-purchase-report') setCurrPage(<PackagingPurchaseReport handlePageClick={handlePageClick} />);
+        if (pageName === 'view-paused-dates') setCurrPage(<ViewPausedDates handlePageClick={handlePageClick}/>);
     }
 
     // HTML structure of this component
@@ -88,7 +90,9 @@ const ReportsPage = (props) => {
                  <button color='lightGreen' ref={props.ref} type="button" onClick={() => handlePageClick('households-report')}>
                     PackagePurchasing Report</button>,
                 <button color='lightGreen' ref={props.ref} type="button" onClick={() => handlePageClick('individual-household-product-report')}>
-                    Individual Household Product Report</button>
+                    Individual Household Product Report</button>,
+                <button color='lightGreen' ref={props.ref} type="button" onClick={() => handlePageClick('view-paused-dates')}>
+                    View Paused Dates</button>,
                 ]}/>
             {currPage}
         </div>

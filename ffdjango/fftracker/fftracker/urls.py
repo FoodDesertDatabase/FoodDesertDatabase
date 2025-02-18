@@ -43,6 +43,8 @@ from .IngDefViews import IngNameView, IngUnitView
 from .HistoricalDataViews import ProductSubscriptionHistoryView
 from .IndividualClientViews import IndividualClientView
 from .HouseholdIdView import HouseholdIdView
+from .viewpauseddates import PausedDatesViewSet, HouseholdDateView 
+from .ShowServingsReport import ServingsReportView
 from .EbtViews import EbtView
 from .ProductReportView import ProductReportView
 from .DietaryRestrictionsViews import DietaryRestrictionsViewSet
@@ -65,6 +67,7 @@ router.register(r'snackhistoryreport', SnackHistoryReportView, basename='snackhi
 router.register(r'packaging-return-report', PackagingReturnView, basename='packaging-return-report')
 router.register(r'station-instructions', StationInstructionsView, basename='station-instructions')
 router.register(r'individual-client', IndividualClientView, basename='individual-client')
+router.register(r'paused-dates', HouseholdDateView, basename='paused-dates')
 # Functional Views
 router.register(r'serving-calculations', ServingCalculationViews, basename='serving-calculations')
 router.register(r'calculations', CalculationsView, basename='calculations')
@@ -80,6 +83,9 @@ router.register(r'packaging-inventory', PackagingInvView, basename='packaging-in
 router.register(r'packaging-type-definitions', PackagingDefView, basename='packaging-defs')
 # Client/User Views
 router.register(r'households', HouseholdsWithAllergies, basename='households')
+router.register(r'datelist', PausedDatesViewSet, basename = 'datelist')  
+
+router.register(r'household-date', HouseholdDateView, basename='household-date')
 router.register(r'users', UserView, basename='users')
 router.register(r'user-auth', UserAuth, basename='user-auth')
 router.register(r'create-account', AccountCreateView, basename='create-account')
@@ -123,5 +129,7 @@ urlpatterns = [
     path('api/get-mealrecipes', RecipeView.as_view({'get': 'retrieve'})),
     path('api/get-stations', StationsView.as_view({'get': 'list', 'get': 'retrieve'})),
     path('api/household-id/', HouseholdIdView.as_view(), name='household-id'),
+    path('api/household/<str:pk>/delete_all_dates/', HouseholdDateView.as_view({'delete': 'delete_all_dates'})),
+    path('api/servings', ServingsReportView.as_view(), name='servings-report'),
     path('api/product-report/', ProductReportView.as_view(), name='product-report'),
 ]
