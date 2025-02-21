@@ -15,7 +15,7 @@ RUN pip install gunicorn
 ADD . /
 
 # Copy the gunicorn bash startup script to the docker entrypoint script location in the container
-COPY entrypoint.sh /docker-entrypoint.d/
+COPY entrypoint.sh /docker-entrypoint.d/entrypoint.sh
 # Allow read/write access in the container
 RUN chmod +x /docker-entrypoint.d/entrypoint.sh
 # Expose port 8080 on docker container
