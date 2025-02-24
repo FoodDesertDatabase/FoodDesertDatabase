@@ -16,7 +16,7 @@ services:
     # Build the React site and set up NGINX
     build:
       context: .
-      dockerfile: ./dockerfile
+      dockerfile: ./webserver/dockerfile
       args:
         BUILD_FOR: $BUILD_FOR
     # Expose port 80
