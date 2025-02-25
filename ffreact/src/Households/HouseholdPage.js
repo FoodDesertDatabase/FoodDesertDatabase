@@ -3,7 +3,6 @@ import { useGridApiContext, GridEditInputCell } from '@mui/x-data-grid';
 import './HouseholdList.css';
 import { Box, Typography, MenuItem, FormControl, Select, Button, Dialog, DialogTitle, DialogContent, DialogActions, List, Paper, ListItem, ListItemText} from '@mui/material';
 import axios from 'axios';
-import AllergiesList from './AllergiesList';
 import NewModularDatagrid from '../components/NewModularDatagrid';
 import CellDialog from '../components/CellDialog.js';
 import HouseholdForm from './HouseholdForm.js';
@@ -123,20 +122,6 @@ const getRowId = (row) => row.hh_id;
         fetchHouseholds();
         fetchPausedDates();
     }, [apiUrl, datelistApiUrl]);
-
-    const AllergyListCell = (params) => {
-        return <AllergiesList allergies={params.value} isEditable={false} />;
-    };
-
-    const AllergyListEditCell = (params) => {
-        const api = useGridApiContext();
-        const updateCellValue = async (a, b) => {
-            const newAllergies = b[0];
-            const { id, field } = params;
-            api.current.setEditCellValue({ id, field, value: newAllergies, debounceMs: 200 });
-        };
-        return <AllergiesList allergies={params.value} isEditable={true} updateEditForm={updateCellValue} />;
-    };
 
     const Datelistcell = (params) => {
         return <Datelist dates={params.value} isEditable={false} />;
@@ -393,8 +378,7 @@ const getRowId = (row) => row.hh_id;
         { field: 'childrenSnacks_flag', headerName: 'Children Snacks', width: 100, type: 'boolean', editable: true, valueParser: (value) => value ? 1 : 0 },
         { field: 'foodBox_flag', headerName: 'Food Box', width: 100, type: 'boolean', editable: true, valueParser: (value) => value ? 1 : 0 },
         { field: 'rteMeal_flag', headerName: 'RTE Meal', width: 100, type: 'boolean', editable: true, valueParser: (value) => value ? 1 : 0 },
-        { field: 'veg_flag', headerName: 'Veg', width: 70, type: 'boolean', description: 'Vegetarian', editable: true, valueParser: (value) => value ? 1 : 0 },
-        { field: 'gf_flag', headerName: 'Gluten Free', width: 70, type: 'boolean', description: 'Gluten Free', editable: true, valueParser: (value) => value ? 1 : 0},
+        
         { 
             field: 'dietary_restrictions', 
             headerName: 'Dietary Restrictions', 
@@ -410,17 +394,7 @@ const getRowId = (row) => row.hh_id;
                 />;
             }
         },
-        { field: 'hh_allergies', headerName: 'Allergies', width: 130, type: 'string', editable: true, 
-            renderCell: (params) => {
-                if (params.value && params.value.length > 0) {
-                    return <CellDialog buttonText={'View Allergies'} dialogTitle={'Allergies'} component={<AllergyListCell {...params} />} />
-                }
-                else {
-                    return <Typography variant='body2'>No Allergies</Typography>
-                }
-            },
-            renderEditCell: (params) => <CellDialog buttonText={'Edit Allergies'} dialogTitle={'Edit Allergies'} component={<AllergyListEditCell {...params} sx={{ height: 'auto', minHeight: 200, maxHeight: 1000 }} />} />
-        },
+        
         {
             field: 'paused_flag', headerName: 'Paused', width: 200, type: 'string', editable: false,
             renderCell: renderPausedCell
