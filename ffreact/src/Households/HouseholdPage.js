@@ -385,7 +385,6 @@ const getRowId = (row) => row.hh_id;
         { field: 'city', headerName: 'City', width: 100, type: 'string', editable: true },
         { field: 'state', headerName: 'State', width: 50, type: 'string', editable: true },
         { field: 'pcode', headerName: 'Zip Code', width: 80, type: 'string', editable: true },
-        { field: 'pcode', headerName: 'Zip Code', width: 80, type: 'string', editable: true, /*valueFormatter: (value) => {return value}*/ },
         { field: 'ebt', headerName: 'EBT', width: 120, type: 'string', editable: true },
         { field: 'ebt_refill_date', headerName: 'EBT Refill Date', width: 150, type: 'day', editable: true },
         { field: 'delivery_notes', headerName: 'Delivery Notes', width: 150, editable: true },
