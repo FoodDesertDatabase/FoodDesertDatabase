@@ -12,7 +12,8 @@ import {
     TableRow,
     Paper,
     ToggleButton,
-    ToggleButtonGroup
+    ToggleButtonGroup,
+    TextField
 } from '@mui/material';
 
 const DietaryRestrictionsReport = () => {
@@ -20,6 +21,7 @@ const DietaryRestrictionsReport = () => {
     const [households, setHouseholds] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [selectedDate, setSelectedDate] = useState('');
 
     const runReport = async () => {
         setIsLoading(true);
@@ -44,8 +46,58 @@ const DietaryRestrictionsReport = () => {
                 }
                 
                 setHouseholds(householdsWithRestrictions);
+            } else if (reportType === 'weekly' && selectedDate) {
+                const checkDate = new Date(selectedDate);
+                const weekEnd = new Date(selectedDate);
+                weekEnd.setDate(weekEnd.getDate() + 6);
+
+                const householdsResponse = await axios.get(process.env.REACT_APP_API_URL + 'households/');
+                let householdsWithRestrictions = [];
+
+                // Get all paused dates first
+                const allPausedDatesResponse = await axios.get(process.env.REACT_APP_API_URL + 'datelist/');
+                const pausedDatesMap = allPausedDatesResponse.data.reduce((acc, date) => {
+                    if (!acc[date.hh_id]) {
+                        acc[date.hh_id] = [];
+                    }
+                    acc[date.hh_id].push(date);
+                    return acc;
+                }, {});
+
+                // Process each household
+                for (const household of householdsResponse.data) {
+                    const isSubscribed = household.ppMealKit_flag || 
+                                       household.childrenSnacks_flag || 
+                                       household.foodBox_flag || 
+                                       household.rteMeal_flag;
+
+                    if (!isSubscribed) continue;
+
+                    // Check if household has any paused dates
+                    const householdPausedDates = pausedDatesMap[household.hh_id] || [];
+                    const isPaused = householdPausedDates.some(date => {
+                        const pauseStart = new Date(date.pause_start_date);
+                        const pauseEnd = new Date(date.pause_end_date);
+                        return (pauseStart <= weekEnd && pauseEnd >= checkDate);
+                    });
+
+                    if (isPaused) continue;
+
+                    // Get dietary restrictions for active subscribed households
+                    const restrictionsResponse = await axios.get(
+                        process.env.REACT_APP_API_URL + 'dietary-restrictions/',
+                        { params: { household: household.hh_id } }
+                    );
+
+                    if (restrictionsResponse.data.length > 0) {
+                        householdsWithRestrictions.push({
+                            ...household,
+                            dietary_restrictions: restrictionsResponse.data
+                        });
+                    }
+                }
+                setHouseholds(householdsWithRestrictions);
             }
-            // Weekly schedule report will be implemented here later
         } catch (err) {
             setError('Failed to fetch report data');
             console.error(err);
@@ -101,25 +153,36 @@ const DietaryRestrictionsReport = () => {
                     variant="contained" 
                     color="primary" 
                     onClick={runReport}
-                    disabled={isLoading}
+                    disabled={isLoading || (reportType === 'weekly' && !selectedDate)}
                 >
                     {isLoading ? 'Running...' : 'Run Report'}
                 </Button>
             </Box>
             
-            <ToggleButtonGroup
-                value={reportType}
-                exclusive
-                onChange={handleReportTypeChange}
-                sx={{ mb: 3 }}
-            >
-                <ToggleButton value="all">
-                    All Households with Restrictions
-                </ToggleButton>
-                <ToggleButton value="weekly" disabled>
-                    Weekly Schedule (Coming Soon)
-                </ToggleButton>
-            </ToggleButtonGroup>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
+                <ToggleButtonGroup
+                    value={reportType}
+                    exclusive
+                    onChange={handleReportTypeChange}
+                >
+                    <ToggleButton value="all">
+                        All Households with Restrictions
+                    </ToggleButton>
+                    <ToggleButton value="weekly">
+                        Weekly Schedule
+                    </ToggleButton>
+                </ToggleButtonGroup>
+
+                {reportType === 'weekly' && (
+                    <TextField
+                        type="date"
+                        label="Select Week Start Date"
+                        value={selectedDate}
+                        onChange={(e) => setSelectedDate(e.target.value)}
+                        InputLabelProps={{ shrink: true }}
+                    />
+                )}
+            </Box>
 
             {households.length > 0 ? (
                 renderReportContent()
